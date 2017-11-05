@@ -22,17 +22,26 @@ public class Creator extends JFrame implements ActionListener{
 	private static int GRID_HEIGHT_SIZE = 10 ; 	
 	
 	private static int FRAME_BUFFER = 20 ; 
-
+	private static int FRAME_WIDTH = 300 ;
+	private static int FRAME_HEIGHT = 300 ;
+	
 	private static Cell[][] cells ; 
 	
 	private Cell DECISION_CELL ;
 	private Cell START_CELL ; 
 	private Cell END_CELL ;
 	
+	private Player PLAYER ;
+	
 	private Deque<Cell> stack ;
 	
 	public Creator() {
 	    init();
+	    
+	    while ( is_unvisited_cells() ){
+	    	pick_frontier_cell();
+	    }
+	    
 	}
 		
 	public void init(){
@@ -74,7 +83,10 @@ public class Creator extends JFrame implements ActionListener{
         
         //Init Start Cell
         START_CELL = new Cell(DECISION_CELL.get_x_coordinate(),DECISION_CELL.get_y_coordinate());  
-                
+        
+        //Init player and set player at starting cell position.
+        PLAYER = new Player(DECISION_CELL.get_x_coordinate(), DECISION_CELL.get_y_coordinate(), CELL_WIDTH/2, Color.GREEN);
+        
         pack();
         repaint();
              
@@ -82,8 +94,7 @@ public class Creator extends JFrame implements ActionListener{
 		
    @Override
     public void paint(Graphics g) {
-	   	   
-        
+	   	     
     	//Draw the Cell border lines.
     	for (int i=0; i<cells.length; i++){
     		for (int j=0; j<cells.length; j++){
@@ -124,6 +135,11 @@ public class Creator extends JFrame implements ActionListener{
         	g.fillRect(END_CELL.get_x_coordinate() + 2, END_CELL.get_y_coordinate() + 2, reduced_width, reduced_width);
     	}
     	
+    	//Draw Player
+    	if( PLAYER != null ){
+        	g.setColor(PLAYER.get_color());
+        	g.fillRect(PLAYER.get_x_location(), PLAYER.get_y_location(), PLAYER.get_length(), PLAYER.get_length());
+    	}
     }
 	
  	public void actionPerformed(ActionEvent ev){
@@ -230,7 +246,9 @@ public class Creator extends JFrame implements ActionListener{
     class myJpanel extends JPanel  {
     	
     	public myJpanel(){
-    		setPreferredSize(new Dimension((GRID_WIDTH_SIZE * CELL_WIDTH) + FRAME_BUFFER*2, (GRID_HEIGHT_SIZE * CELL_WIDTH) + FRAME_BUFFER*2));
+    		//setPreferredSize(new Dimension((GRID_WIDTH_SIZE * CELL_WIDTH) + FRAME_BUFFER*2, (GRID_HEIGHT_SIZE * CELL_WIDTH) + FRAME_BUFFER*2));
+    		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+
     	} 
     	
     }
