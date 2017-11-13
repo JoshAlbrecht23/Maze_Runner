@@ -3,8 +3,11 @@ package Code;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.KeyEventDispatcher;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -48,6 +51,8 @@ public class Creator extends JFrame implements ActionListener{
 		
 		Random rand = new Random();
 			
+        addKeyListener(new TAdapter());
+		
 		//Initialize window
 		thePanel = new myJpanel() ; 
 		
@@ -142,9 +147,17 @@ public class Creator extends JFrame implements ActionListener{
     	}
     }
 	
- 	public void actionPerformed(ActionEvent ev){
- 		
- 	} 
+   	private boolean check_move(int x, int y){
+   		boolean check = true ;
+   		
+   		/*
+   		if ( ){
+   			
+   		}
+   		*/
+   		
+   		return check ;
+   	}
    
    	private void pick_frontier_cell(){
    		   		
@@ -231,7 +244,7 @@ public class Creator extends JFrame implements ActionListener{
    	}
  	
     public static void main(String[] args) {
-
+    	
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
@@ -252,6 +265,20 @@ public class Creator extends JFrame implements ActionListener{
     	} 
     	
     }
+    
+    private class TAdapter extends KeyAdapter {
+    	
+        @Override
+        public void keyReleased(KeyEvent e) {
+            PLAYER.keyReleased(e);
+            repaint();
+        }
+    }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
 }
 
 
