@@ -9,8 +9,8 @@ public class Player {
 	private int Y_LOCATION ;
 	private int LENGTH ; 
 	private Color COLOR ;
-	private int dx = 3 ;
-	private int dy = 3 ;
+	private int dx = 4 ;
+	private int dy = 4 ;
 	
 	public Player(int x, int y, int length, Color color){
 		X_LOCATION = x ;
@@ -57,21 +57,19 @@ public class Player {
    public void keyReleased(KeyEvent e) {
 	   
 	   int keyCode = e.getKeyCode();
-	    switch( keyCode ) { 
-	        case KeyEvent.VK_UP:
-	            set_y(get_y_location() - get_dy()); 
-	            System.out.println("Up pressed " + get_x_location() + "," + get_y_location());
-	        case KeyEvent.VK_DOWN:
-	            set_y(get_y_location() + get_dy()); 
-	            System.out.println("Down pressed " + get_x_location() + "," + get_y_location());
-	        case KeyEvent.VK_LEFT:
-	            set_x(get_x_location() - get_dx()); 
-	            System.out.println("Left pressed " + get_x_location() + "," + get_y_location());
-	        case KeyEvent.VK_RIGHT :
-	            set_x(get_x_location() + get_dx());
-	            System.out.println("Right pressed " + get_x_location() + "," + get_y_location());
-	     }
-	    
+
+	   if (keyCode == KeyEvent.VK_UP){
+		   set_y(get_y_location() - get_dy()); 
+	   }
+	   if (keyCode == KeyEvent.VK_DOWN){
+           set_y(get_y_location() + get_dy()); 
+	   }
+	   if (keyCode == KeyEvent.VK_LEFT){
+		   set_x(get_x_location() - get_dx()); 
+	   }
+	   if (keyCode == KeyEvent.VK_RIGHT){
+           set_x(get_x_location() + get_dx());
+	   }
 	} 
 	
 }

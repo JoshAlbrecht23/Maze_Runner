@@ -58,7 +58,7 @@ public class Creator extends JFrame implements ActionListener{
 		
 		this.add(thePanel) ; 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Maze Creator");
+        this.setTitle("Maze Runner");
         this.setResizable(true);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -270,6 +270,12 @@ public class Creator extends JFrame implements ActionListener{
     	
         @Override
         public void keyReleased(KeyEvent e) {
+            PLAYER.keyReleased(e);
+            repaint();
+        }
+        
+        @Override
+        public void keyPressed(KeyEvent e) {
             PLAYER.keyReleased(e);
             repaint();
         }
