@@ -92,6 +92,8 @@ public class Creator extends JFrame implements ActionListener{
         //Init player and set player at starting cell position.
         PLAYER = new Player(DECISION_CELL.get_x_coordinate(), DECISION_CELL.get_y_coordinate(), CELL_WIDTH/2, Color.GREEN);
         
+        //thePanel.setLocation(PLAYER.get_x_location() - ( FRAME_WIDTH / 2 ), PLAYER.get_y_location() - (FRAME_WIDTH / 2));
+        
         pack();
         repaint();
              
@@ -99,7 +101,10 @@ public class Creator extends JFrame implements ActionListener{
 		
    @Override
     public void paint(Graphics g) {
-	   	     
+	   	     	  
+        g.translate((PLAYER.get_x_location() - ( FRAME_WIDTH / 2 )) * -1, (PLAYER.get_y_location() - (FRAME_HEIGHT / 2)) * -1);
+        g.clearRect(FRAME_WIDTH * -1,FRAME_HEIGHT * -1 , GRID_WIDTH_SIZE*CELL_WIDTH+FRAME_WIDTH, GRID_HEIGHT_SIZE*CELL_WIDTH+FRAME_HEIGHT);
+        
     	//Draw the Cell border lines.
     	for (int i=0; i<cells.length; i++){
     		for (int j=0; j<cells.length; j++){
@@ -145,6 +150,7 @@ public class Creator extends JFrame implements ActionListener{
         	g.setColor(PLAYER.get_color());
         	g.fillRect(PLAYER.get_x_location(), PLAYER.get_y_location(), PLAYER.get_length(), PLAYER.get_length());
     	}
+    	        
     }
 	
    	private boolean check_move(int x, int y){
@@ -257,13 +263,9 @@ public class Creator extends JFrame implements ActionListener{
     } 
 
     class myJpanel extends JPanel  {
-    	
     	public myJpanel(){
-    		//setPreferredSize(new Dimension((GRID_WIDTH_SIZE * CELL_WIDTH) + FRAME_BUFFER*2, (GRID_HEIGHT_SIZE * CELL_WIDTH) + FRAME_BUFFER*2));
     		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-
-    	} 
-    	
+    	} 	
     }
     
     private class TAdapter extends KeyAdapter {
