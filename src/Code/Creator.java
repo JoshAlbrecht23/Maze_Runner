@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Line2D;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -90,10 +92,8 @@ public class Creator extends JFrame implements ActionListener{
         START_CELL = new Cell(DECISION_CELL.get_x_coordinate(),DECISION_CELL.get_y_coordinate());  
         
         //Init player and set player at starting cell position.
-        PLAYER = new Player(DECISION_CELL.get_x_coordinate(), DECISION_CELL.get_y_coordinate(), CELL_WIDTH/2, Color.GREEN);
-        
-        //thePanel.setLocation(PLAYER.get_x_location() - ( FRAME_WIDTH / 2 ), PLAYER.get_y_location() - (FRAME_WIDTH / 2));
-        
+        PLAYER = new Player(DECISION_CELL.get_x_coordinate() + 10, DECISION_CELL.get_y_coordinate() + 10, CELL_WIDTH/2, Color.GREEN);
+                
         pack();
         repaint();
              
@@ -101,9 +101,11 @@ public class Creator extends JFrame implements ActionListener{
 		
    @Override
     public void paint(Graphics g) {
-	   	     	  
+	   	
+	    //Set the Camera Origin based on the players position.
         g.translate((PLAYER.get_x_location() - ( FRAME_WIDTH / 2 )) * -1, (PLAYER.get_y_location() - (FRAME_HEIGHT / 2)) * -1);
-        g.clearRect(FRAME_WIDTH * -1,FRAME_HEIGHT * -1 , GRID_WIDTH_SIZE*CELL_WIDTH+FRAME_WIDTH, GRID_HEIGHT_SIZE*CELL_WIDTH+FRAME_HEIGHT);
+        //Clear the possible viewing area.
+        g.clearRect(FRAME_WIDTH * -1,FRAME_HEIGHT * -1 , GRID_WIDTH_SIZE*CELL_WIDTH+(FRAME_WIDTH*2), GRID_HEIGHT_SIZE*CELL_WIDTH+(FRAME_HEIGHT*2));
         
     	//Draw the Cell border lines.
     	for (int i=0; i<cells.length; i++){
@@ -153,15 +155,38 @@ public class Creator extends JFrame implements ActionListener{
     	        
     }
 	
-   	private boolean check_move(int x, int y){
-   		boolean check = true ;
+   	public boolean check_move(int x, int y){
+   		boolean check = false ;
    		
-   		/*
-   		if ( ){
-   			
-   		}
-   		*/
+   		Rectangle rect = new Rectangle(x,y,PLAYER.get_length(),PLAYER.get_length());
    		
+   		for (int i=0; i<cells.length; i++){
+    		for (int j=0; j<cells.length; j++){
+    			Cell myCell = cells[i][j] ; 
+    			    			
+	    		if (myCell.get_down() == true){
+	    			if ( rect.intersectsLine(new Line2D.Double(myCell.get_x_coordinate(), myCell.get_y_coordinate()+CELL_WIDTH, myCell.get_x_coordinate()+CELL_WIDTH,myCell.get_y_coordinate()+CELL_WIDTH))){
+	    				return true ;
+	    			}
+		    	}
+		    	if (myCell.get_left() == true){
+	    			if ( rect.intersectsLine(new Line2D.Double(myCell.get_x_coordinate(), myCell.get_y_coordinate(), myCell.get_x_coordinate(),myCell.get_y_coordinate()+CELL_WIDTH))){
+	    				return true ;
+	    			}
+		    	}
+		    	if (myCell.get_right() == true){
+	    			if ( rect.intersectsLine(new Line2D.Double(myCell.get_x_coordinate()+CELL_WIDTH, myCell.get_y_coordinate(), myCell.get_x_coordinate()+CELL_WIDTH,myCell.get_y_coordinate()+CELL_WIDTH))){
+	    				return true ;
+	    			}
+		    	}
+		    	if (myCell.get_up() == true){
+	    			if ( rect.intersectsLine(new Line2D.Double(myCell.get_x_coordinate(), myCell.get_y_coordinate(), myCell.get_x_coordinate()+CELL_WIDTH,myCell.get_y_coordinate()))){
+	    				return true ;
+	    			}
+		    	}
+    		}	
+    	}
+		System.out.println("check_move return: FALSE");
    		return check ;
    	}
    
@@ -272,14 +297,58 @@ public class Creator extends JFrame implements ActionListener{
     	
         @Override
         public void keyReleased(KeyEvent e) {
-            PLAYER.keyReleased(e);
+        	int keyCode = e.getKeyCode();
+
+     	   if (keyCode == KeyEvent.VK_UP){
+     		   if (!check_move(PLAYER.get_x_location(), PLAYER.get_y_location() - PLAYER.get_dy())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+     	   if (keyCode == KeyEvent.VK_DOWN){
+     		   if (!check_move(PLAYER.get_x_location(), PLAYER.get_y_location() + PLAYER.get_dy())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+     	   if (keyCode == KeyEvent.VK_LEFT){
+     		   if (!check_move(PLAYER.get_x_location() - PLAYER.get_dx(), PLAYER.get_y_location())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+     	   if (keyCode == KeyEvent.VK_RIGHT){
+     		   if (!check_move(PLAYER.get_x_location() + PLAYER.get_dx(), PLAYER.get_y_location() - PLAYER.get_dy())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+        	
             repaint();
         }
         
         @Override
         public void keyPressed(KeyEvent e) {
-            PLAYER.keyReleased(e);
-            repaint();
+        	int keyCode = e.getKeyCode();
+
+     	   if (keyCode == KeyEvent.VK_UP){
+     		   if (!check_move(PLAYER.get_x_location(), PLAYER.get_y_location() - PLAYER.get_dy())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+     	   if (keyCode == KeyEvent.VK_DOWN){
+     		   if (!check_move(PLAYER.get_x_location(), PLAYER.get_y_location() + PLAYER.get_dy())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+     	   if (keyCode == KeyEvent.VK_LEFT){
+     		   if (!check_move(PLAYER.get_x_location() - PLAYER.get_dx(), PLAYER.get_y_location())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+     	   if (keyCode == KeyEvent.VK_RIGHT){
+     		   if (!check_move(PLAYER.get_x_location() + PLAYER.get_dx(), PLAYER.get_y_location() - PLAYER.get_dy())){
+     	        	PLAYER.keyReleased(e);
+     		   }
+     	   }
+        	
+        	repaint();
         }
     }
 

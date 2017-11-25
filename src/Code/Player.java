@@ -9,8 +9,8 @@ public class Player {
 	private int Y_LOCATION ;
 	private int LENGTH ; 
 	private Color COLOR ;
-	private int dx = 4 ;
-	private int dy = 4 ;
+	private int dx = 7 ;
+	private int dy = 7 ;
 	
 	public Player(int x, int y, int length, Color color){
 		X_LOCATION = x ;
