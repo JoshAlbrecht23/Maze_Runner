@@ -283,8 +283,6 @@ public class Creator extends JFrame implements ActionListener{
             }
             
         });
-        
-
     } 
 
     class myJpanel extends JPanel  {
