@@ -35,6 +35,10 @@ public class Creator extends JFrame implements ActionListener{
 	private Cell DECISION_CELL ;
 	private Cell START_CELL ; 
 	private Cell END_CELL ;
+	private Cell FINISH_LINE_CELL ;
+	
+	private static int COUNTER = 0 ;
+	private int[][] distFromStart ;
 	
 	private Player PLAYER ;
 	
@@ -46,6 +50,10 @@ public class Creator extends JFrame implements ActionListener{
 	    while ( is_unvisited_cells() ){
 	    	pick_frontier_cell();
 	    }
+	    
+    	clearVisited() ;
+    	fillDistanceGrid(START_CELL);
+    	FINISH_LINE_CELL = getEndCell() ;
 	    
 	}
 		
@@ -70,6 +78,8 @@ public class Creator extends JFrame implements ActionListener{
         
         //Initialize grid of cells
         cells  = new Cell[GRID_WIDTH_SIZE][GRID_HEIGHT_SIZE] ; 
+        distFromStart = new int [GRID_WIDTH_SIZE][GRID_HEIGHT_SIZE] ;
+
         //Create cells    
         for (int i=0 ; i < GRID_HEIGHT_SIZE ; i++ ){
         	for (int j=0 ; j < GRID_WIDTH_SIZE ; j++ ){
@@ -144,7 +154,19 @@ public class Creator extends JFrame implements ActionListener{
     	
     	//Draw End
     	if( END_CELL != null ){
-        	g.fillRect(END_CELL.get_x_coordinate() + 2, END_CELL.get_y_coordinate() + 2, reduced_width, reduced_width);
+        	
+    		g.setColor(Color.white);
+    		g.fillRect(END_CELL.get_x_coordinate() + 2, END_CELL.get_y_coordinate() + 2, reduced_width, reduced_width);
+        	//clearVisited() ;
+        	//fillDistanceGrid(START_CELL);
+        	//FINISH_LINE_CELL = getEndCell() ;
+        	
+    	}
+    	
+    	//Draw Finish Line
+    	if( FINISH_LINE_CELL != null ){
+    		g.setColor(Color.RED);
+    		g.fillRect(FINISH_LINE_CELL.get_x_coordinate() + 2, FINISH_LINE_CELL.get_y_coordinate() + 2, reduced_width, reduced_width);
     	}
     	
     	//Draw Player
@@ -186,7 +208,7 @@ public class Creator extends JFrame implements ActionListener{
 		    	}
     		}	
     	}
-		System.out.println("check_move return: FALSE");
+
    		return check ;
    	}
    
@@ -274,6 +296,118 @@ public class Creator extends JFrame implements ActionListener{
    		return b ;
    	}
  	
+public void fillDistanceGrid( Cell currCell ){
+   		
+   		Cell myCell = cells[currCell.get_x()][currCell.get_y()] ;
+   		   		
+   		if( myCell.get_x() ==  START_CELL.get_x() && myCell.get_y() ==  START_CELL.get_y() ){
+   			distFromStart[myCell.get_x()][myCell.get_y()] = 0 ;
+   		}else if( distFromStart[myCell.get_x()][myCell.get_y()] == -1 ){
+   			
+   			COUNTER++;
+   			distFromStart[myCell.get_x()][myCell.get_y()] = COUNTER ;
+   		}else{
+   			COUNTER = distFromStart[myCell.get_x()][myCell.get_y()] ;
+   		}
+   		
+   		
+   		if ( myCell.get_left() == false ){
+   			if (distFromStart[myCell.get_x() - 1][myCell.get_y()] == -1)
+   				stack.push(cells[myCell.get_x() - 1][myCell.get_y()]);
+   		}
+   			
+   		if ( myCell.get_right() == false ){
+   			if ( distFromStart[myCell.get_x() + 1][myCell.get_y()] == -1 )
+   				stack.push(cells[myCell.get_x() + 1][myCell.get_y()]);
+   		}
+   		
+   		if ( myCell.get_down() == false ){
+   			if ( distFromStart[myCell.get_x()][myCell.get_y() + 1] == -1 )
+   				stack.push(cells[myCell.get_x()][myCell.get_y() + 1]);
+   		}
+   				
+   		if ( myCell.get_up() == false ){
+   			if (distFromStart[myCell.get_x()][myCell.get_y() -1] == -1)
+   				stack.push(cells[myCell.get_x()][myCell.get_y() - 1]);
+   		}
+   			
+   		if ( stack.isEmpty() == false ){
+   			Cell temp = stack.pop() ;
+   			//Get new current count
+   			COUNTER = getNewInt(temp);
+   			fillDistanceGrid( temp ) ;
+   		}
+   	}
+   	
+public int getNewInt(Cell curr){
+		int newCount = 0 ;
+		int x = curr.get_x();
+		int y = curr.get_y();
+		
+		/* Returns the cell's count based on the neighbor's count. */
+		
+		if ( distFromStart[x][y] == COUNTER )
+			return COUNTER ;
+		
+		if ( curr.get_left() == false ){
+			if (distFromStart[curr.get_x() - 1][curr.get_y()] != -1)
+				newCount = distFromStart[curr.get_x() - 1][curr.get_y()] ;
+		}
+			
+		if ( curr.get_right() == false ){
+			if ( distFromStart[curr.get_x() + 1][curr.get_y()] != -1 )
+				newCount = distFromStart[curr.get_x() + 1][curr.get_y()] ;
+		}
+		
+		if ( curr.get_down() == false ){
+			if ( distFromStart[curr.get_x()][curr.get_y() + 1] != -1 )
+				newCount = distFromStart[curr.get_x()][curr.get_y() + 1] ;
+		}
+				
+		if ( curr.get_up() == false ){
+			if (distFromStart[curr.get_x()][curr.get_y() -1] != -1)
+				newCount = distFromStart[curr.get_x()][curr.get_y() -1] ;
+		}
+		
+		return newCount ;
+	}
+	
+	public void clearVisited(){
+		//Clear stack.
+		stack.clear() ; 
+		//Clear the marked flags.
+		for (int i=0; i<GRID_WIDTH_SIZE; i++){
+			for (int j=0; j<GRID_HEIGHT_SIZE; j++){
+				cells[i][j].set_marked(false);
+			}
+		}
+		//Fill the distance grid with -1
+		for (int i=0; i<GRID_WIDTH_SIZE; i++){
+			for (int j=0; j<GRID_HEIGHT_SIZE; j++){
+				distFromStart[i][j] = -1 ;
+			}
+		}
+	}
+	
+   	public Cell getEndCell(){
+   		
+   		Cell lastCell = null ;
+   		
+   		for ( int i=0; i<GRID_WIDTH_SIZE; i++ ){
+   			for (int j=0; j<GRID_HEIGHT_SIZE; j++){
+   				   				
+   				if ( lastCell == null ){
+   					lastCell = cells[i][j];
+   				}else{
+   					if ( distFromStart[i][j] > distFromStart[lastCell.get_x()][lastCell.get_y()] )
+   						lastCell = cells[i][j] ;
+   				}
+   			}
+   		}
+   		
+   		return lastCell ;
+   	}
+
     public static void main(String[] args) {
     	
         java.awt.EventQueue.invokeLater(new Runnable() {
